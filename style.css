@@ -1,0 +1,660 @@
+:root {
+    --color-text: #4682B4;       /* Steel Blue: 文本、深色点缀 */
+    --color-primary: #87CEEB;    /* Sky Blue: 按钮、用户气泡 */
+    --color-secondary: #B0E0E6;  /* Powder Blue: 机器气泡 */
+    --color-bg: #E0FFFF;         /* Light Cyan: 整体背景 */
+    --color-white: #ffffff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Page Transitions */
+.page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.page.active {
+    display: flex;
+    opacity: 1;
+}
+
+.chat-layout.page {
+    flex-direction: row;
+    align-items: stretch; /* Stretch sidebar and content */
+    justify-content: flex-start;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 260px;
+    background-color: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(15px);
+    border-right: 1px solid rgba(70, 130, 180, 0.1);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    transition: transform 0.3s ease;
+    z-index: 20;
+}
+
+.sidebar-title {
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    color: var(--color-text);
+    padding-left: 10px;
+    border-left: 4px solid var(--color-primary);
+}
+
+.session-list {
+    list-style: none;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.session-item {
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+    color: #555;
+    background-color: rgba(255,255,255,0.5);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.session-item .delete-session-btn {
+    opacity: 0;
+    font-weight: bold;
+    color: inherit;
+    padding: 0 5px;
+    border-radius: 50%;
+    transition: opacity 0.2s, background-color 0.2s;
+}
+
+.session-item:hover .delete-session-btn {
+    opacity: 1;
+}
+
+.session-item .delete-session-btn:hover {
+    background-color: rgba(0,0,0,0.1);
+    color: red;
+}
+
+.session-item:hover {
+    background-color: rgba(255,255,255,0.8);
+    transform: translateX(5px);
+}
+
+.session-item.active-session {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(135, 206, 235, 0.4);
+}
+
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center children horizontally */
+    position: relative;
+    height: 100%;
+    /* remove inner paddings/margins to let wrapper fill */
+}
+
+/* Wrapper to hold chat and TV side by side */
+.content-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: center;
+    width: 100%;
+    max-width: 1200px;
+    padding-top: 60px; /* Leave space for absolute header/button */
+    box-sizing: border-box;
+    min-height: 0; /* CRITICAL: Allows child containers to scroll instead of growing infinitely */
+}
+
+/* Landing Page */
+.logo {
+    font-size: 4rem;
+    font-weight: 300;
+    margin-bottom: 1rem;
+    letter-spacing: 0.5rem;
+    color: var(--color-text);
+    animation: float 3s ease-in-out infinite;
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    margin-bottom: 3rem;
+    opacity: 0.8;
+}
+
+.btn {
+    padding: 15px 40px;
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    border: none;
+    border-radius: 30px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(70, 130, 180, 0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(70, 130, 180, 0.3);
+    background-color: #7EC0EE;
+}
+
+/* Chat Page */
+.header {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 100; /* Ensure header stays on top if needed, though centered alignment usually avoids overlap */
+}
+
+.logo-small {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* 3D TV Robot CSS Art */
+.tv-container {
+    /* Fixed height for TV to prevent squishing or growing */
+    flex: 0 0 300px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 1000px;
+    z-index: 10;
+    margin-left: 20px;
+}
+
+.tv-robot {
+    position: relative;
+    transform-style: preserve-3d;
+    animation: float-robot 6s ease-in-out infinite; /* Slower, smoother float */
+}
+
+/* Head / Main Body */
+.head {
+    width: 220px;
+    height: 160px;
+    background-color: var(--color-primary); /* Sky Blue */
+    border-radius: 40px; /* Very rounded */
+    padding: 15px;
+    border: 6px solid #fff; /* White cartoon outline */
+    box-shadow: 
+        0 15px 35px rgba(70, 130, 180, 0.2),
+        inset -10px -10px 0 rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    z-index: 5;
+}
+
+/* Screen area */
+.screen {
+    flex: 1;
+    height: 100%;
+    background-color: #F0F8FF; /* Very light blue */
+    border-radius: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 3px 3px 10px rgba(0,0,0,0.1);
+    position: relative;
+    border: 3px solid #E0F0F5;
+    overflow: hidden;
+}
+
+/* Glare on screen */
+.screen::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+.face {
+    color: var(--color-text);
+    font-size: 3rem; /* Bigger face */
+    font-weight: 900;
+    font-family: 'Segoe UI', sans-serif; /* Cleaner font */
+    z-index: 2;
+    text-shadow: 2px 2px 0px rgba(255,255,255,0.5);
+    margin-bottom: 5px;
+}
+
+/* Cheeks */
+.cheeks {
+    position: absolute;
+    width: 60%;
+    top: 55%;
+    display: flex;
+    justify-content: space-between;
+    z-index: 1;
+    padding: 0 10px;
+}
+
+.cheek {
+    width: 12px;
+    height: 8px;
+    background-color: #FFB7B2; /* Cute pink */
+    border-radius: 50%;
+    opacity: 0.6;
+    animation: blush 3s infinite alternate;
+}
+
+@keyframes blush { from { opacity: 0.4; } to { opacity: 0.8; transform: scale(1.1); } }
+
+/* Controls Side Panel */
+.controls {
+    width: 45px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    padding-left: 10px;
+    border-left: 2px dashed rgba(255,255,255,0.5); /* Stitching detail */
+}
+
+.knob {
+    width: 28px;
+    height: 28px;
+    background-color: #fff;
+    border-radius: 50%;
+    box-shadow: 0 3px 0 rgba(70, 130, 180, 0.2);
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.knob::after {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 8px;
+    background-color: var(--color-text);
+    border-radius: 2px;
+}
+
+.knob:hover { transform: rotate(45deg); }
+
+.speaker-grill {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 5px;
+}
+
+.speaker-grill span {
+    width: 24px;
+    height: 3px;
+    background-color: rgba(255,255,255,0.6);
+    border-radius: 2px;
+}
+
+/* Antennas (Rabbit Ears) */
+.antennas {
+    position: absolute;
+    top: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 50px;
+    z-index: 1;
+}
+
+.antenna {
+    position: absolute;
+    bottom: 0;
+    width: 6px;
+    height: 50px;
+    background-color: var(--color-text);
+    border-radius: 5px;
+}
+
+.antenna::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 14px;
+    height: 14px;
+    background-color: var(--color-secondary); /* Match body accent */
+    border: 2px solid var(--color-text);
+    border-radius: 50%;
+}
+
+.antenna.left {
+    left: 20px;
+    transform: rotate(-25deg);
+    animation: wiggle-left 4s ease-in-out infinite;
+    height: 45px;
+}
+
+.antenna.right {
+    right: 20px;
+    transform: rotate(25deg);
+    animation: wiggle-right 5s ease-in-out infinite 0.5s;
+}
+
+@keyframes wiggle-left { 0%,100%{transform:rotate(-25deg);} 50%{transform:rotate(-35deg);} }
+@keyframes wiggle-right { 0%,100%{transform:rotate(25deg);} 50%{transform:rotate(35deg);} }
+
+/* Neck & Body */
+.body-neck {
+    width: 60px;
+    height: 15px;
+    background-color: #ddd;
+    margin: -5px auto 0;
+    position: relative;
+    z-index: 4;
+    border-radius: 5px;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+}
+
+.base-foot {
+    width: 120px;
+    height: 20px;
+    background-color: #fff;
+    border-radius: 15px;
+    margin: -2px auto 0;
+    box-shadow: 0 5px 15px rgba(70, 130, 180, 0.15);
+    position: relative;
+    z-index: 4;
+    border: 2px solid #eee;
+}
+
+/* Animations */
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes float-robot {
+    0%, 100% { transform: translateY(0) rotateX(5deg); }
+    50% { transform: translateY(-15px) rotateX(-5deg); }
+}
+
+/* Chat Area */
+.chat-container {
+    flex: 1; /* Take remaining space */
+    min-height: 0; /* CRITICAL: Enables scrolling for flex children */
+    width: 100%;
+    max-width: 600px; /* Keep the requested width */
+    background-color: rgba(255, 255, 255, 0.4);
+    border-radius: 30px; /* Full radius since it's floating */
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 -5px 20px rgba(70, 130, 180, 0.05);
+    margin-bottom: 20px; /* Give some breathing room at the bottom */
+}
+
+.chat-history {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0; /* Critical for flex child scrolling */
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Custom Scrollbar */
+.chat-history::-webkit-scrollbar {
+    width: 8px;
+}
+.chat-history::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.05);
+    border-radius: 10px;
+}
+.chat-history::-webkit-scrollbar-thumb {
+    background-color: var(--color-text); /* Steel Blue for visibility */
+    border-radius: 10px;
+    border: 2px solid transparent; /* Creates padding around thumb */
+    background-clip: content-box;
+}
+.chat-history::-webkit-scrollbar-thumb:hover {
+    background-color: #36648B;
+}
+
+.message {
+    max-width: 80%;
+    padding: 12px 18px;
+    border-radius: 18px;
+    line-height: 1.6;
+    font-size: 0.95rem;
+    animation: popIn 0.3s ease-out;
+    word-wrap: break-word;
+}
+
+@keyframes popIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.bot-msg {
+    align-self: flex-start;
+    background-color: var(--color-secondary);
+    color: #2F4F4F;
+    border-bottom-left-radius: 4px;
+}
+
+.user-msg {
+    align-self: flex-end;
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    border-bottom-right-radius: 4px;
+}
+
+.input-area {
+    display: flex;
+    gap: 10px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(70, 130, 180, 0.1);
+    flex-shrink: 0; /* Prevent input area from squishing */
+}
+
+#user-input {
+    flex: 1;
+    padding: 12px 20px;
+    border-radius: 25px;
+    border: 1px solid var(--color-secondary);
+    background-color: var(--color-white);
+    outline: none;
+    color: var(--color-text);
+    transition: box-shadow 0.2s;
+}
+
+#user-input:focus {
+    box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.3);
+}
+
+.btn-send {
+    padding: 0 25px;
+    background-color: var(--color-text);
+    color: var(--color-white);
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+.btn-send:hover {
+    background-color: #36648B;
+}
+
+.btn-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: none;
+    background-color: var(--color-secondary);
+    color: #2F4F4F;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.btn-icon:hover {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    transform: rotate(90deg);
+}
+
+/* Emoticons States */
+.face.thinking { animation: blink 1s infinite; }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+/* Stats Button */
+.stats-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px; /* Right for better balance on desktop, or left if strictly requested */
+    padding: 10px 20px;
+    background-color: var(--color-white);
+    color: var(--color-text);
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+    z-index: 100;
+}
+
+.stats-btn:hover {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 200;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: var(--color-white);
+    margin: 2% auto; /* 占据较大空间 */
+    padding: 30px;
+    border-radius: 20px;
+    width: 95%; /* 接近整个页面宽度 */
+    max-width: none;
+    height: 90vh; /* 接近整个页面高度 */
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-btn:hover { color: var(--color-text); }
+
+/* Table */
+.table-container {
+    margin-top: 20px;
+    overflow: auto;
+    flex: 1; /* 让表格容器占满剩余高度 */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* 固定列宽 */
+    font-size: 0.9rem;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+    vertical-align: top;
+    word-wrap: break-word; /* 允许单词换行，适配固定宽度 */
+}
+
+/* 可以稍微指定第一列的宽度 */
+th:nth-child(1) {
+    width: 80px; 
+}
+
+th {
+    background-color: var(--color-secondary);
+    color: #2F4F4F;
+    font-weight: bold;
+    position: sticky;
+    top: 0;
+}
+
+tr:nth-child(even) { background-color: #f9f9f9; }
+tr:hover { background-color: #f1f1f1; }

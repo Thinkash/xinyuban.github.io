@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xinyuban 心语伴</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Landing Page -->
+    <div id="landing-page" class="page active">
+        <h1 class="logo">心语伴</h1>
+        <p class="subtitle">您的心灵水疗中心</p>
+        <button id="get-start-btn" class="btn">Get Start</button>
+    </div>
+
+    <!-- Chat Page -->
+    <div id="chat-page" class="page chat-layout">
+        <div id="sidebar" class="sidebar">
+            <h3 class="sidebar-title">历史会话</h3>
+            <ul id="session-list" class="session-list">
+                <!-- Sessions will be loaded here -->
+            </ul>
+        </div>
+        
+        <div class="main-content">
+            <div class="header">
+                <span class="logo-small">心语伴</span>
+            </div>
+            
+            <!-- Mind Stats Button -->
+            <button id="stats-btn" class="stats-btn">
+                📊 心灵统计
+            </button>
+
+            <!-- Stats Modal -->
+            <div id="stats-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close-btn">&times;</span>
+                    <h2>心灵思维链统计</h2>
+                    <div class="table-container">
+                        <table id="stats-table">
+                            <thead>
+                                <tr>
+                                    <th>回复次序</th>
+                                    <th>当前阶段</th>
+                                    <th>情绪反馈</th>
+                                    <th>需求分析</th>
+                                    <th>实时督导</th>
+                                    <th>聚焦技术</th>
+                                    <th>例外/改变/工具</th>
+                                    <th>会谈小记</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Data will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content-wrapper">
+                <div class="chat-container">
+                    <div id="chat-history" class="chat-history">
+                        <!-- Messages will appear here -->
+                    </div>
+                    <div class="input-area">
+                        <button id="new-chat-btn" class="btn-icon" title="新对话">+</button>
+                        <input type="text" id="user-input" placeholder="写下你的心事..." autocomplete="off">
+                        <button id="send-btn" class="btn-send">发送</button>
+                    </div>
+                </div>
+
+                <div class="tv-container">
+                    <div class="tv-robot">
+                        <div class="antennas">
+                            <div class="antenna left"></div>
+                            <div class="antenna right"></div>
+                        </div>
+                        <div class="head">
+                            <div class="screen">
+                                <div class="face" id="robot-face">^w^</div>
+                                <div class="cheeks">
+                                    <span class="cheek left"></span>
+                                    <span class="cheek right"></span>
+                                </div>
+                            </div>
+                            <div class="controls">
+                                <div class="knob top"></div>
+                                <div class="knob bottom"></div>
+                                <div class="speaker-grill">
+                                    <span></span><span></span><span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="body-neck"></div>
+                        <div class="base-foot"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
